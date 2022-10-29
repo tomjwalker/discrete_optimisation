@@ -8,6 +8,10 @@ Tracking three values at tree nodes:
 If optimistic evaluation is worse than best final value found so far in exploration, don't have to explore that branch any further
 
 ## Relaxations
+Relaxations are used to calculate optimistic evaluations of nodes. Good relaxations are close to the actual optimal result, and can reduce the search space significantly
 
-Integrity relaxation:
-$$ x_i \in {0, 1} $$
+Capacity relaxation (over-simplistic):
+- Ignore constraint $\sum_i{w_ix_i} \le K$
+
+Linear relaxation (more powerful relaxation):
+- $x_i \in \{ 0, 1 \}$ relaxed to $0 \le x_i \le 1$
