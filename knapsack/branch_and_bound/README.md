@@ -49,4 +49,4 @@ Least discrepancy:
 | --- | --- | --- | --- |
 | Depth first | Go deep | When finds new node worse than the found solution | Space: always have essentially one branch at any one time (assessing all items) | 
 | Best first | Go for/from the best so far | When all nodes are worse than found solution | Worst case: explores whole tree; Best case: minimal search. Depends on relaxation | 
-| Least discrepancy | Trusts greedy heuristic | Prunes? | Depending on implementation, trade-off between time efficiency and space efficiency | 
+| Least discrepancy | Trusts greedy heuristic | When all nodes are worse than found solution | Depending on implementation, trade-off between time efficiency and space efficiency | 
