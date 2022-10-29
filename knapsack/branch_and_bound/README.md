@@ -31,10 +31,22 @@ Best-first:
 
 Least discrepancy:
 - Trust a greedy heuristic, and move away from the heuristic in a very systematic fashion
+- Assumes a good search heuristic is available
+- Trusting heuristic means branching left on the search tree
+- Branches right means heuristic was wrong
+- Limited discrepancy search (LDS):
+  -  Avoids mistakes
+  -  Explores search tree in increasing order of mistakes
+  -  Trusts starting heuristic less and less
+-  Explores search space in waves:
+  -  No mistakes
+  -  One mistake (all branches with one and only one rightwards branch)
+  -  Two mistakes (all branches with two and only two rightwards branches)
+  -  ...
 
 
 | Strategy name | Strategy | Prunes? | Memory efficient? | 
 | --- | --- | --- | --- |
-| Depth first | Strategy | Prunes? | Memory efficient? | 
-| Best first | Go for/from the best so far | When all nodes are worse than found solution | - Worst case: explores whole tree \ Best case: minimal search. Depends on relaxation | 
-| Least discrepancy | Strategy | Prunes? | Memory efficient? | 
+| Depth first | Go deep | When finds new node worse than the found solution | Space: always have essentially one branch at any one time (assessing all items) | 
+| Best first | Go for/from the best so far | When all nodes are worse than found solution | Worst case: explores whole tree; Best case: minimal search. Depends on relaxation | 
+| Least discrepancy | Trusts greedy heuristic | Prunes? | Depending on implementation, trade-off between time efficiency and space efficiency | 
