@@ -10,4 +10,4 @@ If optimistic evaluation is worse than best final value found so far in explorat
 ## Relaxations
 
 Integrity relaxation:
-$ x_i /in {0, 1} $
+$$ x_i /in {0, 1} $$
