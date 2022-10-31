@@ -1,3 +1,4 @@
+```
 **Inputs**: values (list of floats), weights (list of floats), capacity (float)
 **Outputs**: optimal decision (list of booleans), maximised value (float)
 
@@ -21,3 +22,4 @@
               v. Else:
                   1. If feasible (remaining capacity +ve) and optimistic estimate beats incumbent value:
                       a. Apply DFS (child_node, incumbent)
+```
