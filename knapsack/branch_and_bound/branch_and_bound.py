@@ -44,11 +44,6 @@ def decision_string_to_array(decision_string):
     return array
 
 
-values = np.array([45, 48, 35])
-weights = np.array([5, 8, 3])
-capacity = 10
-
-
 def _calculate_value_densities(item_values, item_weights):
     return item_values / item_weights
 
@@ -58,7 +53,22 @@ def sort_items_by_density(item_values, item_weights):
     sort_descending_order = (np.argsort(-value_densities))  # -ve sign for sorting descending
     item_values_sorted = item_values[sort_descending_order]
     item_weights_sorted = item_weights[sort_descending_order]
-    return item_values_sorted, item_weights_sorted
+    return item_values_sorted, item_weights_sorted, sort_descending_order
+
+
+def decision_array_for_original_item_order(decision_string, sort_descending_order):
+    """
+    Given decision string from the incumbent object, outputs decision array for items in their original order
+    :param decision_string:
+    :param sort_descending_order:
+    :return:
+    """
+    decision_array = decision_string_to_array(decision_string)
+    index_selected_items = sort_descending_order[(decision_array).astype(bool)]
+    decision_array_original_item_order = np.zeros_like(decision_array)
+    decision_array_original_item_order[index_selected_items] = 1
+    return decision_array_original_item_order
+
 
 
 class Incumbent:
@@ -145,22 +155,37 @@ def check_if_node_max_depth(node):
     return node.decision_string[-1] != "x"
 
 
-def depth_first_search(
+def _depth_first_search(
         parent_node,
         incumbent_best_selection,
         item_values_sorted,
         item_weights_sorted,
         knapsack_capacity
 ):
+    """
+    Main implementation of depth first search.
+    Recursive definition which assumes binary search tree, and favours left (decision=1) branch
+    Takes a node, evaluates its left (then right) child, and if the left child is feasible and has the opportunity
+    to beat the current best-so-far (according to a linear relaxation), continues depth-first down that branch
+
+    Returns nothing; updates incumbent_best register object in-place
+    :param parent_node: Input node
+    :param incumbent_best_selection: Register of best-so-far knapsack value and corresponding decision string
+    :param item_values_sorted: Array of item values, sorted by value density
+    :param item_weights_sorted: Array of item values, sorted by value density
+    :param knapsack_capacity: Capacity of knapsack
+    :return:
+    """
+
     for (decision, child) in {1: parent_node.left, 0: parent_node.right}.items():
 
         child = Node()
         child.decision_string = generate_child_string(parent_node.decision_string, decision)
         evaluate_node(child, item_values_sorted, item_weights_sorted, knapsack_capacity)
 
-        print(f"Evaluating {child.decision_string}")
-        print(f"Current incumbent decisions = {incumbent_best_selection.best_node_key}")
-        print(f"Current incumbent value = {incumbent_best_selection.best_node_value}")
+        # print(f"Evaluating {child.decision_string}")
+        # print(f"Current incumbent decisions = {incumbent_best_selection.best_node_key}")
+        # print(f"Current incumbent value = {incumbent_best_selection.best_node_value}")
 
         is_max_depth = check_if_node_max_depth(child)
         is_node_feasible = child.evaluation["remaining_capacity"] >= 0
@@ -173,12 +198,12 @@ def depth_first_search(
                     # Replace incumbent best in register
                     incumbent_best_selection.best_node_key = child.decision_string
                     incumbent_best_selection.best_node_value = child.evaluation["current_value"]
-                    print(f"NEW BEST FOUND! Best value {incumbent_best_selection.best_node_value}")
+                    # print(f"NEW BEST FOUND! Best value {incumbent_best_selection.best_node_value}")
 
                 else:
                     # If decisions still to be taken, but current optimistic estimate is exceeding current
                     # best so far; continue down search tree
-                    depth_first_search(
+                    _depth_first_search(
                         child,
                         incumbent_best_selection,
                         item_values_sorted,
@@ -186,25 +211,30 @@ def depth_first_search(
                         knapsack_capacity
                     )
 
-
-if __name__ == "__main__":
+def depth_first_search(values, weights, capacity):
+    """
+    Sorts items by value density (best to worst), then applies depth-first-search down the search tree.
+    Evaluates tree nodes with linear relaxation for an optimistic evaluation of partial decision strings. If feasible,
+    carries on down the LHS branch (adding items to the knapsack)
+    :param values: Item values
+    :param weights: Item weights
+    :param capacity: Knapsack capacity
+    :return incumbent_best: Object storing a register of the best item selections and optimal knapsack value
+    """
 
     # Order items by value density (best to worst)
-    values_sorted, weights_sorted = sort_items_by_density(values, weights)
+    values_sorted, weights_sorted, sort_descending_order = sort_items_by_density(values, weights)
 
     # Instantiate root node and incumbent best register
-    root = Node("xxx")
+    root = Node("x"*len(values))
     incumbent_best = Incumbent()
     evaluate_node(root, values_sorted, weights_sorted, capacity)
 
     is_node_max_depth = check_if_node_max_depth(root)
     is_feasible = root.evaluation["remaining_capacity"] >= 0
 
-    # temp input for future function
-    node = root
-
     if is_feasible and not is_node_max_depth:
-        depth_first_search(
+        _depth_first_search(
             root,
             incumbent_best,
             values_sorted,
@@ -212,12 +242,16 @@ if __name__ == "__main__":
             capacity
         )
 
+    best_decisions = decision_array_for_original_item_order(incumbent_best.best_node_key, sort_descending_order)
+    optimal_value = incumbent_best.best_node_value
+    return best_decisions, optimal_value
 
 
+if __name__ == "__main__":
 
+    values = np.array([45, 48, 35, 92, 35, 20])
+    weights = np.array([5, 8, 3, 15, 3, 5])
+    capacity = 18
 
-
-
-
-
-stopper = 1
+    best_decisions, optimal_value = depth_first_search(values, weights, capacity)
+    print(best_decisions, optimal_value)
