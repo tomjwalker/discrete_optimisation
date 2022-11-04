@@ -191,8 +191,8 @@ def _depth_first_search(
         is_node_feasible = child.evaluation["remaining_capacity"] >= 0
 
         if is_node_feasible:
-            if child.evaluation["current_value"] > incumbent_best_selection.best_node_value:
-                if is_max_depth:
+            if is_max_depth:
+                if child.evaluation["current_value"] > incumbent_best_selection.best_node_value:
                     # If node is a max depth node - all decisions taken e.g. "101"...
                     # and it supersedes incumbent best value found...
                     # Replace incumbent best in register
@@ -200,7 +200,8 @@ def _depth_first_search(
                     incumbent_best_selection.best_node_value = child.evaluation["current_value"]
                     # print(f"NEW BEST FOUND! Best value {incumbent_best_selection.best_node_value}")
 
-                else:
+            else:
+                if child.evaluation["optimistic_evaluation"] >= incumbent_best_selection.best_node_value:
                     # If decisions still to be taken, but current optimistic estimate is exceeding current
                     # best so far; continue down search tree
                     _depth_first_search(
@@ -210,6 +211,7 @@ def _depth_first_search(
                         item_weights_sorted,
                         knapsack_capacity
                     )
+
 
 def depth_first_search(values, weights, capacity):
     """
@@ -249,9 +251,9 @@ def depth_first_search(values, weights, capacity):
 
 if __name__ == "__main__":
 
-    values = np.array([45, 48, 35, 92, 35, 20])
-    weights = np.array([5, 8, 3, 15, 3, 5])
-    capacity = 18
+    values = np.array([34, 66, 22, 10, 55, 35, 28, 140])
+    weights = np.array([3, 6, 2, 1, 5, 3, 2, 10])
+    capacity = 10
 
     best_decisions, optimal_value = depth_first_search(values, weights, capacity)
     print(best_decisions, optimal_value)
