@@ -2,6 +2,11 @@ import numpy as np
 from math import ceil
 
 
+# Possible bugs
+# =============
+# - if capacity less than any item weights (so can't fit anything in)
+
+
 class Node:
     def __init__(self, decision_string=None):
         self.decision_string = decision_string
@@ -192,10 +197,6 @@ def _depth_first_search(
         child.decision_string = generate_child_string(parent_node.decision_string, decision)
         evaluate_node(child, item_values_sorted, item_weights_sorted, knapsack_capacity)
 
-        print(f"Evaluating {child.decision_string}")
-        print(f"Current incumbent decisions = {incumbent_best_selection.best_node_key}")
-        print(f"Current incumbent value = {incumbent_best_selection.best_node_value}")
-
         is_max_depth = check_if_node_max_depth(child)
         is_node_feasible = child.evaluation["remaining_capacity"] >= 0
 
@@ -207,7 +208,6 @@ def _depth_first_search(
                     # Replace incumbent best in register
                     incumbent_best_selection.best_node_key = child.decision_string
                     incumbent_best_selection.best_node_value = child.evaluation["current_value"]
-                    # print(f"NEW BEST FOUND! Best value {incumbent_best_selection.best_node_value}")
 
             else:
                 if child.evaluation["optimistic_evaluation"] >= incumbent_best_selection.best_node_value:
