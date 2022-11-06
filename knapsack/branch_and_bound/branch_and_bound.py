@@ -107,19 +107,28 @@ def _get_optimistic_evaluation(item_weights_sorted, decision_array, knapsack_cap
     weights_selected = item_weights_sorted * decision_array_optimistic
     cumulative_weight = np.cumsum(weights_selected)
     remaining_capacity = knapsack_capacity - cumulative_weight
-    index_exceeded = np.argmax(remaining_capacity < 0)  # argmax gives first index where condition is true
 
-    # Get fraction of item (at exceed position) which would satisfy weight
-    remaining_capacity_before_item = remaining_capacity[index_exceeded - 1]
-    problem_item_weight = item_weights_sorted[index_exceeded]
-    feasible_fraction = remaining_capacity_before_item / problem_item_weight
+    # This if statement included to avoid unattractive behaviour of np.argmax() in if statement
+    # which returns 0 if condition never reached
+    remaining_capacity_infeasible = remaining_capacity < 0
+    if remaining_capacity_infeasible.sum() > 0:
 
-    # Get value of knapsack with this linear relaxation
-    decision_array_full_items = decision_array_optimistic.copy()
-    decision_array_full_items[index_exceeded:] = 0
-    full_values_selected = (item_values_sorted * decision_array_full_items).sum()
-    fractional_item_selected = item_values_sorted[index_exceeded] * feasible_fraction
-    optimistic_evaluation = full_values_selected + fractional_item_selected
+        index_exceeded = np.argmax(remaining_capacity < 0)  # argmax gives first index where condition is true
+
+        # Get fraction of item (at exceed position) which would satisfy weight
+        remaining_capacity_before_item = remaining_capacity[index_exceeded - 1]
+        problem_item_weight = item_weights_sorted[index_exceeded]
+        feasible_fraction = remaining_capacity_before_item / problem_item_weight
+
+        # Get value of knapsack with this linear relaxation
+        decision_array_full_items = decision_array_optimistic.copy()
+        decision_array_full_items[index_exceeded:] = 0
+        full_values_selected = (item_values_sorted * decision_array_full_items).sum()
+        fractional_item_selected = item_values_sorted[index_exceeded] * feasible_fraction
+        optimistic_evaluation = full_values_selected + fractional_item_selected
+
+    else:
+        optimistic_evaluation = (item_values_sorted * decision_array_optimistic).sum()
 
     return optimistic_evaluation
 
@@ -183,9 +192,9 @@ def _depth_first_search(
         child.decision_string = generate_child_string(parent_node.decision_string, decision)
         evaluate_node(child, item_values_sorted, item_weights_sorted, knapsack_capacity)
 
-        # print(f"Evaluating {child.decision_string}")
-        # print(f"Current incumbent decisions = {incumbent_best_selection.best_node_key}")
-        # print(f"Current incumbent value = {incumbent_best_selection.best_node_value}")
+        print(f"Evaluating {child.decision_string}")
+        print(f"Current incumbent decisions = {incumbent_best_selection.best_node_key}")
+        print(f"Current incumbent value = {incumbent_best_selection.best_node_value}")
 
         is_max_depth = check_if_node_max_depth(child)
         is_node_feasible = child.evaluation["remaining_capacity"] >= 0
@@ -253,7 +262,7 @@ if __name__ == "__main__":
 
     values = np.array([34, 66, 22, 10, 55, 35, 28, 140])
     weights = np.array([3, 6, 2, 1, 5, 3, 2, 10])
-    capacity = 10
+    capacity = 11
 
     best_decisions, optimal_value = depth_first_search(values, weights, capacity)
     print(best_decisions, optimal_value)
