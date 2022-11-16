@@ -7,3 +7,6 @@ Implementation of various optimisation algorithms encountered in the Coursera di
    - Simple dynamic program implementation
    - Branch-and-bound
        - Depth-first search (node evaluation with linear relaxation)
+       
+   ![image](https://user-images.githubusercontent.com/37417736/202211747-0f78dfe1-1823-4dca-bcd1-9995f5c4e97b.png)
+
