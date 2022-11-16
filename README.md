@@ -1,4 +1,4 @@
-# discrete_optimisation
+# Discrete optimisation
 
 Implementation of various optimisation algorithms encountered in the Coursera discrete optimisation course (https://www.coursera.org/learn/discrete-optimization/home/info)
 
