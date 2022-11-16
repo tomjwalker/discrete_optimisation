@@ -5,7 +5,7 @@ Tracking three values at tree nodes:
 - Remaining capacity of knapsack
 - Optimistic estimate of realisable value continuing along this branch
 
-If optimistic evaluation is worse than best final value found so far in exploration, don't have to explore that branch any further
+If optimistic evaluation is worse than the best final value found so far in exploration, don't have to explore that branch any further
 
 
 ## Relaxations
@@ -39,13 +39,13 @@ Least discrepancy:
   -  Trusts starting heuristic less and less
 -  Explores search space in waves:
   -  No mistakes
-  -  One mistake (all branches with one and only one rightwards branch)
+  -  One mistake (all branches with one and only one rightward branch)
   -  Two mistakes (all branches with two and only two rightwards branches)
   -  ...
 
 
-| Strategy name | Strategy | Prunes? | Memory efficient? | 
-| --- | --- | --- | --- |
-| Depth first | Go deep | When finds new node worse than the found solution | Space: always have essentially one branch at any one time (assessing all items) | 
-| Best first | Go for/from the best so far | When all nodes are worse than found solution | Worst case: explores whole tree; Best case: minimal search. Depends on relaxation | 
-| Least discrepancy | Trusts greedy heuristic | When all nodes are worse than found solution | Depending on implementation, trade-off between time efficiency and space efficiency | 
+| Strategy name     | Strategy                    | Prunes?                                           | Memory efficient?                                                                   | 
+|-------------------|-----------------------------|---------------------------------------------------|-------------------------------------------------------------------------------------|
+| Depth first       | Go deep                     | When finds new node worse than the found solution | Space: always have essentially one branch at any one time (assessing all items)     | 
+| Best first        | Go for/from the best so far | When all nodes are worse than found solution      | Worst case: explores whole tree; Best case: minimal search. Depends on relaxation   | 
+| Least discrepancy | Trusts greedy heuristic     | When all nodes are worse than found solution      | Depending on implementation, trade-off between time efficiency and space efficiency | 
