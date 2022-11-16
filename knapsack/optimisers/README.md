@@ -22,8 +22,7 @@ Linear relaxation (more powerful relaxation):
 
 Depth-first:
 - Prunes when a node estimation is worse than best-found solution
-
-![image](https://user-images.githubusercontent.com/37417736/198833336-5301480f-d9b0-4e97-9629-3ea05d0f903d.png)
+![image](https://user-images.githubusercontent.com/37417736/200190853-4bbb1433-8268-4d34-9761-0290e1f4b9c3.png)
 
 
 Best-first:
