@@ -14,14 +14,13 @@
 
 
 ## WIP: tasks
-1. Implement 2-OPT
-   a. From city coordinates, a function to calculate distance matrix --- DONE
-   b. An initialise route function --- DONE
-   c. A 2-OPT swap function
-   d. An algorithm for iterating over the route, applying the 2-opt swap over and over, until a best route is returned
-   e. A way to update the distance matrix
+1. Implement 2-OPT --- DONE
+   - From city coordinates, a function to calculate distance matrix --- DONE
+   - An initialise route function --- DONE
+   - A 2-OPT swap function --- DONE
+   - An algorithm for iterating over the route, applying the 2-opt swap over and over, until a best route is returned --- DONE
 2. Implement K-OPT
 3. Speed up Python implementation for larger TSPs
-   a. Vectorise distance calculation
-   b. Coursera to Numpy coordinate interface
-   c. Numba compiling?
+   - Vectorise distance calculation
+   - Coursera to Numpy coordinate interface
+   - Numba compiling?
